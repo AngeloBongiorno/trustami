@@ -1,12 +1,10 @@
 pub struct Tokenizer<'a> {
-    input: &'a [char]
+    input: &'a [char],
 }
 
 impl<'a> Tokenizer<'a> {
     pub fn from_chars(input: &'a [char]) -> Self {
-        Self {
-            input
-        }
+        Self { input }
     }
 
     fn trim_leading_whitespace(&mut self) {
@@ -15,10 +13,13 @@ impl<'a> Tokenizer<'a> {
         }
     }
 
-    fn chop_while<F>(&mut self, mut input_function: F) -> &'a [char] where F: FnMut(&char) -> bool {
+    fn chop_while<F>(&mut self, mut input_function: F) -> &'a [char]
+    where
+        F: FnMut(&char) -> bool,
+    {
         let mut n = 0;
         while self.input.len() > n && input_function(&self.input[n]) {
-            n+=1;
+            n += 1;
         }
         let output = &self.input[0..n];
         self.input = &self.input[n..];
@@ -58,11 +59,7 @@ mod tests {
     #[test]
     fn tokenize_three_plain_words() {
         let input: Vec<char> = "good morning everyone".chars().collect();
-        let expected = [
-            "good",
-            "morning",
-            "everyone"
-        ];
+        let expected = ["good", "morning", "everyone"];
 
         let tokenizer = Tokenizer::from_chars(&input);
 
@@ -70,7 +67,6 @@ mod tests {
             assert_eq!(expected.get(index).unwrap().to_owned(), token)
         }
     }
-
 
     #[test]
     fn trim_leading() {
@@ -85,7 +81,6 @@ mod tests {
 
     #[test]
     fn tokenizer_returns_none() {
-
         let input: Vec<char> = "          ".chars().collect();
 
         let mut tokenizer = Tokenizer::from_chars(&input);

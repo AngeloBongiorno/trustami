@@ -1,35 +1,45 @@
 use std::fs::File;
 use std::io::Read;
-use std::collections::HashMap;
-use trustami::tokenizer::Tokenizer;
 use trustami::parser;
+use trustami::tokenizer::Tokenizer;
+use trustami::term_frequency::TermFrequency;
+use trustami::inverse_doc_frequency::InverseDocumentFrequency;
 
 
-type TermFrequency = HashMap<String, u16>;
 
 fn main() {
-    let file_path = "./data/italy.xml";
-    let mut file_handle = File::open(file_path).unwrap();
+    let file_paths = vec![
+        "./data/italy.xml",
+        "./data/comp_sci.xml",
+        "./data/ai.xml",
+        "./data/machine_learning.xml",
+    ];
 
-    let mut input_data = String::new();
-    let _ = file_handle.read_to_string(&mut input_data).unwrap();
+    let mut docs = vec![];
 
-    let txt = parser::parse_xml_string(input_data);
+    for file_path in file_paths {
+        let mut file_handle = File::open(file_path).unwrap();
 
-    let chars: Vec<char> = txt.chars().collect();
-    let tokenizer = Tokenizer::from_chars(&chars);
+        let mut input_data = String::new();
+        let _ = file_handle.read_to_string(&mut input_data).unwrap();
 
-    let mut tf = TermFrequency::new();
+        let txt = parser::parse_xml_string(input_data);
 
-    for token in tokenizer {
-        if let Some(count) = tf.get_mut(&token) {
-            *count += 1;
-        } else {
-            tf.insert(token, 1);
+        let chars: Vec<char> = txt.chars().collect();
+        let tokenizer = Tokenizer::from_chars(&chars);
+
+        let mut tf = TermFrequency::default();
+
+        for token in tokenizer {
+            tf.update(&token);
         }
+
+        docs.push(tf);
     }
 
-    println!("There are {} terms in the doc", tf.len());
+
+    let mut idf = InverseDocumentFrequency::default();
+    idf.update("is", &mut docs); 
+    idf.update("Rome", &mut docs);
+    println!("{:?}", idf);
 }
-
-
