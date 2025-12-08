@@ -1,0 +1,375 @@
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.11/ http://www.mediawiki.org/xml/export-0.11.xsd" version="0.11" xml:lang="en">
+  <siteinfo>
+    <sitename>Wikipedia</sitename>
+    <dbname>enwiki</dbname>
+    <base>https://en.wikipedia.org/wiki/Main_Page</base>
+    <generator>MediaWiki 1.46.0-wmf.5</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2" case="first-letter">Media</namespace>
+      <namespace key="-1" case="first-letter">Special</namespace>
+      <namespace key="0" case="first-letter" />
+      <namespace key="1" case="first-letter">Talk</namespace>
+      <namespace key="2" case="first-letter">User</namespace>
+      <namespace key="3" case="first-letter">User talk</namespace>
+      <namespace key="4" case="first-letter">Wikipedia</namespace>
+      <namespace key="5" case="first-letter">Wikipedia talk</namespace>
+      <namespace key="6" case="first-letter">File</namespace>
+      <namespace key="7" case="first-letter">File talk</namespace>
+      <namespace key="8" case="first-letter">MediaWiki</namespace>
+      <namespace key="9" case="first-letter">MediaWiki talk</namespace>
+      <namespace key="10" case="first-letter">Template</namespace>
+      <namespace key="11" case="first-letter">Template talk</namespace>
+      <namespace key="12" case="first-letter">Help</namespace>
+      <namespace key="13" case="first-letter">Help talk</namespace>
+      <namespace key="14" case="first-letter">Category</namespace>
+      <namespace key="15" case="first-letter">Category talk</namespace>
+      <namespace key="100" case="first-letter">Portal</namespace>
+      <namespace key="101" case="first-letter">Portal talk</namespace>
+      <namespace key="118" case="first-letter">Draft</namespace>
+      <namespace key="119" case="first-letter">Draft talk</namespace>
+      <namespace key="126" case="first-letter">MOS</namespace>
+      <namespace key="127" case="first-letter">MOS talk</namespace>
+      <namespace key="710" case="first-letter">TimedText</namespace>
+      <namespace key="711" case="first-letter">TimedText talk</namespace>
+      <namespace key="828" case="first-letter">Module</namespace>
+      <namespace key="829" case="first-letter">Module talk</namespace>
+      <namespace key="1728" case="first-letter">Event</namespace>
+      <namespace key="1729" case="first-letter">Event talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>Tf–idf</title>
+    <ns>0</ns>
+    <id>2057290</id>
+    <revision>
+      <id>1323191325</id>
+      <parentid>1319129399</parentid>
+      <timestamp>2025-11-20T06:50:35Z</timestamp>
+      <contributor>
+        <username>Swimswan</username>
+        <id>49706245</id>
+      </contributor>
+      <minor/>
+      <comment>Added citation supporting current applied use of tf–idf in search engine optimization workflows and semantic relevance analysis.</comment>
+      <origin>1323191325</origin>
+      <model>wikitext</model>
+      <format>text/x-wiki</format>
+      <text bytes="24648" sha1="sput5p1bekc6f9v0yun04z52rm9e6fp" xml:space="preserve">{{Short description|Estimate of the importance of a word in a document}}
+{{Lowercase|title=tf-idf}}
+In [[information retrieval]], '''tf–idf''' ('''term frequency–inverse document frequency''', '''TF*IDF''', '''TFIDF''', '''TF–IDF''', or '''Tf–idf''') is a measure of importance of a word to a [[document]] in a collection or [[Text corpus|corpus]], adjusted for the fact that some words appear more frequently in general.&lt;ref&gt;{{Cite book |last1= Rajaraman |first1=A. |last2= Ullman |first2= J.D. |doi= 10.1017/CBO9781139058452.002 |chapter= Data Mining |title= Mining of Massive Datasets |pages= 1–17 |year= 2011 |isbn= 978-1-139-05845-2 |chapter-url= http://i.stanford.edu/~ullman/mmds/ch1.pdf}}&lt;/ref&gt; Like the [[bag-of-words model]], it models a document as a [[multiset]] of words, without [[word order]]. It is a refinement over the simple [[bag-of-words model]], by allowing the weight of words to depend on the rest of the corpus.
+
+It was often used as a [[weighting factor]] in searches of information retrieval, [[text mining]], and [[user modeling]]. A survey conducted in 2015 showed that 83% of text-based recommender systems in digital libraries used tf–idf.&lt;ref&gt;{{Cite journal |last1=Breitinger |first1=Corinna |last2=Gipp |first2=Bela |last3=Langer |first3=Stefan |date=2015-07-26 |title=Research-paper recommender systems: a literature survey |url=https://kops.uni-konstanz.de/bitstreams/8b886e4a-ea4b-4eae-bba1-19918f353170/download |journal=International Journal on Digital Libraries |language=en |volume=17 |issue=4 |pages=305–338 |doi=10.1007/s00799-015-0156-0 |issn=1432-5012 |s2cid=207035184}}&lt;/ref&gt; Variations of the tf–idf weighting scheme were often used by [[search engine]]s as a central tool in scoring and ranking a document's [[Relevance (information retrieval)|relevance]] given a user [[Information retrieval|query]]. In applied [[search engine optimization]] practice, tf–idf is also described as a method for analysing term importance within web pages and supporting semantic SEO techniques.&lt;ref&gt;{{cite web |last=Ansary |first=Ayub |title=TF-IDF &amp; Semantic SEO |url=https://ayubansary.com/blog/tf-idf-semantic-seo/ |date=February 24, 2025 |website=ayubansary.com |access-date=November 20, 2025}}&lt;/ref&gt; One of the simplest [[ranking function]]s is computed by summing the tf–idf for each query term; many more sophisticated ranking functions are variants of this simple model.
+
+
+== Motivations ==
+[[Karen Spärck Jones]] (1972) conceived a statistical interpretation of term-specificity called Inverse Document Frequency (idf), which became a cornerstone of term weighting:&lt;ref&gt;{{Cite journal |last= Spärck Jones |first= K. |author-link= Karen Spärck Jones |doi= 10.1108/eb026526 |title= A Statistical Interpretation of Term Specificity and Its Application in Retrieval |journal= Journal of Documentation |volume= 28|number=1 |pages= 11–21 |year= 1972 |citeseerx= 10.1.1.115.8343 |s2cid= 2996187 }}&lt;/ref&gt;
+{{Quote|text=The specificity of a term can be quantified as an inverse function of the number of documents in which it occurs.}}For example, the df (document frequency) and idf for some words in Shakespeare's 37 plays are as follows:&lt;ref&gt;Speech and Language Processing (3rd ed. draft), Dan Jurafsky and James H. Martin, chapter 14.https://web.stanford.edu/~jurafsky/slp3/14.pdf&lt;/ref&gt;
+{| class="wikitable"
+|+
+! Word
+! df
+! idf
+|-
+| Romeo
+| 1
+| 1.57
+|-
+| salad 
+| 2
+| 1.27
+|-
+| Falstaff
+| 4
+| 0.966
+|-
+| forest
+| 12
+| 0.489
+|-
+| battle
+| 21
+| 0.246
+|-
+| wit
+| 34
+| 0.037
+|-
+| fool
+| 36
+| 0.012
+|-
+| good
+| 37
+| 0
+|-
+| sweet
+| 37
+| 0
+|}
+
+We see that "[[Romeo]]", "[[John Falstaff|Falstaff]]", and "salad" appears in very few plays, so seeing these words, one could get a good idea as to which play it might be. In contrast, "good" and "sweet" appears in every play and are completely uninformative as to which play it is.
+
+== Definition ==
+
+# The tf–idf is the product of two statistics, ''term frequency'' and ''inverse document frequency''. There are various ways for determining the exact values of both statistics.
+# A formula that aims to define the importance of a keyword or phrase within a document or a web page.
+
+{| class="wikitable" style="float: right; margin-left: 1.5em; margin-right: 0; margin-top: 0;"
+|+ Variants of term frequency (tf) weight
+! weighting scheme
+! tf weight
+|-
+| binary || &lt;math&gt;{0,1}&lt;/math&gt;
+|-
+| raw count || &lt;math&gt; f_{t,d}&lt;/math&gt;
+|-
+|term frequency
+|&lt;math&gt; f_{t,d} \Bigg/ {\sum_{t' \in d}{f_{t',d}}}&lt;/math&gt;
+|-
+| log normalization ||  &lt;math&gt; \log (1 + f_{t,d})&lt;/math&gt;
+|-
+| double normalization 0.5 ||  &lt;math&gt;0.5 + 0.5 \cdot \frac { f_{t,d} }{\max_{\{t' \in d\}} {f_{t',d}}} &lt;/math&gt;
+|-
+| double normalization K ||  &lt;math&gt;K + (1 - K) \frac { f_{t,d} }{\max_{\{t' \in d\}} {f_{t',d}}} &lt;/math&gt;
+|}
+=== Term frequency ===
+
+Term frequency, {{math|tf(''t'',''d'')}}, is the relative frequency of term {{math|''t''}} within document {{math|''d''}}, 
+:&lt;math&gt; \mathrm{tf}(t,d) = \frac{f_{t,d}}{{\sum_{t' \in d}{f_{t',d}}}}&lt;/math&gt;,
+where {{math|''f''&lt;sub&gt;''t'',''d''&lt;/sub&gt;}} is the ''raw count'' of a term in a document, i.e., the number of times that term {{mvar|t}} occurs in document {{mvar|d}}. Note the denominator is simply the total number of terms in document {{math|''d''}} (counting each occurrence of the same term separately). There are various other ways to define term frequency:&lt;ref&gt;{{Cite book |last1 = Manning |first1= C.D. |last2= Raghavan |first2= P. |last3= Schutze |first3=H. |doi= 10.1017/CBO9780511809071.007 |chapter= Scoring, term weighting, and the vector space model |title= Introduction to Information Retrieval |pages= 100 |year= 2008 |isbn= 978-0-511-80907-1 |chapter-url= http://nlp.stanford.edu/IR-book/pdf/06vect.pdf }}&lt;/ref&gt;{{rp|128}}
+
+* the raw count itself: {{math|1=tf(''t'',''d'') = ''f''&lt;sub&gt;''t'',''d''&lt;/sub&gt;}}
+* [[boolean data type|Boolean]] "frequencies": {{math|1=tf(''t'',''d'') = 1}} if {{mvar|t}} occurs in {{mvar|d}} and 0 otherwise;
+* [[Logarithmic scale|logarithmically scaled]] frequency: {{math|1=tf(''t'',''d'') = log (1 + ''f''&lt;sub&gt;''t'',''d''&lt;/sub&gt;)}};&lt;ref&gt;{{cite web |title= TFIDF statistics {{!}} SAX-VSM |url= https://jmotif.github.io/sax-vsm_site/morea/algorithm/TFIDF.html}}&lt;/ref&gt;
+* augmented frequency, to prevent a bias towards longer documents, e.g. raw frequency divided by the raw frequency of the most frequently occurring term in the document:
+:&lt;math&gt;\mathrm{tf}(t,d) = 0.5 + 0.5 \cdot  \frac{f_{t, d}}{\max\{f_{t', d}:t' \in d\}}&lt;/math&gt;
+
+{{clear right}}
+=== Inverse document frequency ===
+
+{| class="wikitable" style="float: right; margin-left: 1.5em; margin-right: 0; margin-top: 0;"
+|+ Variants of inverse document frequency (idf) weight
+! weighting scheme
+! idf weight (&lt;math&gt;n_t = |\{d \in D: t \in d\}| &lt;/math&gt;)
+|-
+| unary || 1
+|-
+| inverse document frequency || &lt;math&gt; \log \frac {N} {n_t} = - \log \frac {n_t} {N} &lt;/math&gt;
+|-
+| inverse document frequency smooth ||&lt;math&gt; \log \left( \frac {N} {1 + n_t}\right)+ 1 &lt;/math&gt;
+|-
+| inverse document frequency max ||  &lt;math&gt; \log \left(\frac {\max_{\{t' \in d\}} n_{t'}} {1 + n_t}\right) &lt;/math&gt;
+|-
+| probabilistic inverse document frequency ||  &lt;math&gt; \log  \frac {N - n_t} {n_t} &lt;/math&gt;
+|}
+
+[[File:Plot IDF functions.png|thumb|Plot of different inverse document frequency functions: standard, smooth, probabilistic.]]
+
+The '''inverse document frequency''' is a measure of how much information the word provides, i.e., how common or rare it is across all documents. It is the [[Logarithmic scale|logarithmically scaled]] inverse fraction of the documents that contain the word (obtained by dividing the total number of documents by the number of documents containing the term, and then taking the logarithm of that quotient):
+
+:&lt;math&gt; \mathrm{idf}(t, D) =  \log \frac{N}{n_t}&lt;/math&gt;
+
+with
+* &lt;math&gt;D&lt;/math&gt;: is the set of all documents in the corpus
+* &lt;math&gt;N = {|D|}&lt;/math&gt;: total number of documents in the corpus
+* &lt;math&gt; n_t = |\{d \in D: t \in d\}| &lt;/math&gt; : number of documents where the term &lt;math&gt; t &lt;/math&gt; appears (i.e., &lt;math&gt; \mathrm{tf}(t,d) \neq 0&lt;/math&gt;). If the term is not in the corpus, this will lead to a division-by-zero. It is therefore common to adjust the numerator to &lt;math&gt;1 + N&lt;/math&gt; and the denominator to &lt;math&gt;1 + |\{d \in D: t \in d\}|&lt;/math&gt;.
+
+{{Clear right}}
+
+=== Term frequency–inverse document frequency ===
+{| class="wikitable" style="float: right; margin-left: 1.5em; margin-right: 0; margin-top: 0;"
+|+ Variants of term frequency-inverse document frequency (tf–idf) weights
+! weighting scheme
+!tf-idf
+|-
+| count-idf
+|&lt;math&gt; f_{t,d} \cdot \log \frac {N} {n_t}&lt;/math&gt;
+|-
+|double normalization-idf
+|&lt;math&gt; \left(0.5 + 0.5 \frac {f_{t,q}} {\max_t f_{t,q}}\right) \cdot \log \frac {N} {n_t} &lt;/math&gt;
+|-
+| log normalization-idf 
+|&lt;math&gt; (1 + \log f_{t,d}) \cdot \log \frac {N} {n_t} &lt;/math&gt;
+|}
+
+Then tf–idf is calculated as
+
+:&lt;math&gt;\mathrm{tfidf}(t,d,D) = \mathrm{tf}(t,d) \cdot \mathrm{idf}(t, D)&lt;/math&gt;
+
+A high weight in tf–idf is reached by a high term [[frequency (statistics)|frequency]] (in the given document) and a low document frequency of the term in the whole collection of documents; the weights hence tend to filter out common terms. Since the ratio inside the idf's log function is always greater than or equal to 1, the value of idf (and tf–idf) is greater than or equal to 0. As a term appears in more documents, the ratio inside the logarithm approaches 1, bringing the idf and tf–idf closer to 0.
+
+{{clear right}}
+== Justification of idf ==
+Idf was introduced as "term specificity" by [[Karen Spärck Jones]] in a 1972 paper. Although it has worked well as a [[heuristic]], its theoretical foundations have been troublesome for at least three decades afterward, with many researchers trying to find [[information theory|information theoretic]] justifications for it.&lt;ref name="understanding"&gt;{{Cite journal| doi = 10.1108/00220410410560582| title = Understanding inverse document frequency: On theoretical arguments for IDF| journal = Journal of Documentation| volume = 60| issue = 5| pages = 503–520| year = 2004| last1 = Robertson | first1 = S. | author-link1 = Stephen Robertson (computer scientist)}}&lt;/ref&gt;
+
+Spärck Jones's own explanation did not propose much theory, aside from a connection to [[Zipf's law]].&lt;ref name="understanding" /&gt; Attempts have been made to put idf on a [[probability theory|probabilistic]] footing,&lt;ref&gt;See also [http://nlp.stanford.edu/IR-book/html/htmledition/probability-estimates-in-practice-1.html#p:justificationofidf Probability estimates in practice] in ''Introduction to Information Retrieval''.&lt;/ref&gt; by estimating the probability that a given document {{mvar|d}} contains a term {{mvar|t}} as the relative document frequency,
+
+:&lt;math&gt;
+P(t|D) = \frac{|\{d \in D: t \in d\}|}{N},
+&lt;/math&gt;
+
+so that we can define idf as
+
+:&lt;math&gt;
+\begin{align}
+\mathrm{idf} &amp; = -\log P(t|D) \\
+             &amp; = \log \frac{1}{P(t|D)} \\
+             &amp; = \log \frac{N}{|\{d \in D: t \in d\}|}
+\end{align}
+&lt;/math&gt;
+
+Namely, the inverse document frequency is the logarithm of "inverse" relative document frequency.
+
+This probabilistic interpretation in turn takes the same form as that of [[self-information]]. However, applying such information-theoretic notions to problems in information retrieval leads to problems when trying to define the appropriate [[event space]]s for the required [[probability distribution]]s: not only documents need to be taken into account, but also queries and terms.&lt;ref name="understanding" /&gt;
+
+== Link with information theory ==
+
+Both term frequency and inverse document frequency can be formulated in terms of [[information theory]]; it helps to understand why their product has a meaning in terms of joint informational content of a document. A characteristic assumption about the distribution &lt;math&gt;p(d,t)&lt;/math&gt; is that:
+
+:&lt;math&gt;
+p(d|t) = \frac{1}{|\{d \in D: t \in d\}|}
+&lt;/math&gt;
+
+This assumption and its implications, according to Aizawa: "represent the heuristic that tf–idf employs."&lt;ref name="Aizawa 2003 45–65"&gt;{{Cite journal |last= Aizawa |first=Akiko |title= An information-theoretic perspective of tf–idf measures |journal= Information Processing and Management |language=en |volume=39 |issue=1 |pages= 45–65 |doi= 10.1016/S0306-4573(02)00021-3 |year=2003 |s2cid=45793141 }}&lt;/ref&gt;
+
+The [[conditional entropy]] of a "randomly chosen" document in the corpus &lt;math&gt;D&lt;/math&gt;, conditional to the fact it contains a specific term &lt;math&gt;t&lt;/math&gt; (and assuming that all documents have equal probability to be chosen) is:
+
+:&lt;math&gt;
+H({\cal D}|{\cal T}=t)=-\sum_d p_{d|t}\log p_{d|t}=-\log \frac{1}{|\{d \in D: t \in d\}|}=\log \frac{|\{d \in D: t \in d\}|}{|D|} + \log |D|=-\mathrm{idf}(t)+\log |D|
+&lt;/math&gt;
+
+In terms of notation, &lt;math&gt;{\cal D}&lt;/math&gt; and &lt;math&gt;{\cal T}&lt;/math&gt; are "random variables" corresponding to respectively draw a document or a term. The [[mutual information]] can be expressed as
+
+:&lt;math&gt;
+M({\cal T};{\cal D}) = H({\cal D}) - H({\cal D}|{\cal T}) = \sum_t p_t\cdot(H({\cal D}) - H({\cal D}|W=t))=\sum_t p_t \cdot \mathrm{idf}(t)
+&lt;/math&gt;
+
+The last step is to expand &lt;math&gt;p_t&lt;/math&gt;, the unconditional probability to draw a term, with respect to the (random) choice of a document, to obtain:
+
+:&lt;math&gt;
+M({\cal T};{\cal D})=\sum_{t,d} p_{t|d}\cdot p_d \cdot \mathrm{idf}(t) =  \sum_{t,d} \mathrm{tf}(t,d)\cdot \frac{1}{|D|}\cdot \mathrm{idf}(t) = \frac{1}{|D|} \sum_{t,d} \mathrm{tf}(t,d)\cdot \mathrm{idf}(t).
+&lt;/math&gt;
+
+This expression shows that summing the Tf–idf of all possible terms and documents recovers the mutual information between documents and term taking into account all the specificities of their joint distribution.&lt;ref name="Aizawa 2003 45–65"/&gt; Each Tf–idf hence carries the "bit of information" attached to a term x document pair.
+
+== Link with statistical theory ==
+Tf–idf is closely related to the negative logarithmically transformed [[p-value|''p''-value]] from a one-tailed formulation of [[Fisher's exact test]] when the underlying corpus documents satisfy certain idealized assumptions. &lt;ref name="Sheridan 2025"&gt;{{Cite journal |last1=Sheridan |first1=Paul |last2=Ahmed |first2=Zeyad |last3=Farooque |first3=Aitazaz A. |date=2025-07-29 |title=A Fisher’s exact test justification of the TF–IDF term-weighting scheme |url=https://www.tandfonline.com/doi/full/10.1080/00031305.2025.2539241 |journal=The American Statistician |language=en |pages= 1–24 |doi=10.1080/00031305.2025.2539241|arxiv=2507.15742 }}&lt;/ref&gt;
+
+== Example of tf–idf ==
+Suppose that we have term count tables of a corpus consisting of only two documents, as listed on the right.
+
+{| class="wikitable" style="float: right; margin-left: 1.5em; margin-right: 0; margin-top: 0;"
+|+ Document 2
+! Term
+! | Term Count
+|-
+| this || 1
+|-
+| is
+| 1
+|-
+| another
+| 2
+|-
+| example
+| 3
+|}
+
+{| class="wikitable" style="float: right; margin-left: 1.5em; margin-right: 0; margin-top: 0;"
+|+ Document 1
+! Term
+! Term Count
+|-
+| this || 1
+|-
+| is
+| 1
+|-
+| a
+| 2
+|-
+| sample
+| 1
+|}
+
+The calculation of tf–idf for the term "this" is performed as follows:
+
+In its raw frequency form, tf is just the frequency of the "this" for each document. In each document, the word "this" appears once; but as the document 2 has more words, its relative frequency is smaller.
+:&lt;math&gt;  \mathrm{tf}(\mathsf{''this''}, d_{1}) = \frac{1}{5} = 0.2 &lt;/math&gt;
+:&lt;math&gt;  \mathrm{tf}(\mathsf{''this''}, d_{2}) = \frac{1}{7} \approx 0.14 &lt;/math&gt;
+
+An idf is constant per corpus, and '''accounts''' for the ratio of documents that include the word "this". In this case, we have a corpus of two documents and all of them include the word "this".
+:&lt;math&gt;  \mathrm{idf}(\mathsf{''this''}, D) =  \log \left (\frac{2}{2}  \right ) = 0 &lt;/math&gt;
+
+So tf–idf is zero for the word "this", which implies that the word is not very informative as it appears in all documents.
+:&lt;math&gt;   \mathrm{tfidf}(\mathsf{''this''}, d_{1}, D) = 0.2 \times 0 = 0 &lt;/math&gt;
+:&lt;math&gt;   \mathrm{tfidf}(\mathsf{''this''}, d_{2}, D) = 0.14 \times 0 = 0 &lt;/math&gt;
+
+The word "example" is more interesting - it occurs three times, but only in the second document:
+:&lt;math&gt;  \mathrm{tf}(\mathsf{''example''}, d_{1}) = \frac{0}{5} = 0 &lt;/math&gt;
+:&lt;math&gt;  \mathrm{tf}(\mathsf{''example''}, d_{2}) = \frac{3}{7} \approx 0.429 &lt;/math&gt;
+:&lt;math&gt;  \mathrm{idf}(\mathsf{''example''}, D) =  \log \left (\frac{2}{1}  \right ) = 0.301 &lt;/math&gt;
+
+Finally,
+:&lt;math&gt;\mathrm{tfidf}(\mathsf{''example''}, d_1, D) = \mathrm{tf}(\mathsf{''example''}, d_1) \times \mathrm{idf}(\mathsf{''example''}, D) = 0 \times 0.301 = 0&lt;/math&gt;
+:&lt;math&gt;\mathrm{tfidf}(\mathsf{''example''}, d_2, D) = \mathrm{tf}(\mathsf{''example''}, d_2) \times \mathrm{idf}(\mathsf{''example''}, D) = 0.429 \times 0.301 \approx 0.129&lt;/math&gt;
+
+(using the [[base 10 logarithm]]).
+
+== Beyond terms ==
+The idea behind tf–idf also applies to entities other than terms. In 1998, the concept of idf was applied to citations.&lt;ref&gt;{{Cite book|last1=Bollacker|first1=Kurt D.|last2=Lawrence|first2=Steve|last3=Giles|first3=C. Lee|title=Proceedings of the second international conference on Autonomous agents - AGENTS '98 |chapter=CiteSeer |date=1998-01-01|pages=116–123|doi=10.1145/280765.280786|isbn=978-0-89791-983-8|s2cid=3526393}}&lt;/ref&gt; The authors argued that "if a very uncommon citation is shared by two documents, this should be weighted more highly than a citation made by a large number of documents". In addition, tf–idf was applied to "visual words" with the purpose of conducting object matching in videos,&lt;ref&gt;{{Cite book|last1=Sivic|first1=Josef|last2=Zisserman|first2=Andrew|title=Proceedings Ninth IEEE International Conference on Computer Vision |chapter=Video Google: A text retrieval approach to object matching in videos |date=2003-01-01|url=http://dl.acm.org/citation.cfm?id=946247.946751|series=ICCV '03|pages=1470–|doi=10.1109/ICCV.2003.1238663|isbn=978-0-7695-1950-0|s2cid=14457153}}&lt;/ref&gt; and entire sentences.&lt;ref&gt;{{Cite web|url=http://research.nii.ac.jp/ntcir/workshop/OnlineProceedings3/NTCIR3-TSC-SekiY.pdf|title=Sentence Extraction by tf/idf and Position Weighting from Newspaper Articles|last=Seki|first=Yohei|publisher=National Institute of Informatics}}&lt;/ref&gt; However, the concept of tf–idf did not prove to be more effective in all cases than a plain tf scheme (without idf). When tf–idf was applied to citations, researchers could find no improvement over a simple citation-count weight that had no idf component.&lt;ref&gt;{{Cite journal|last1=Beel|first1=Joeran|last2=Breitinger|first2=Corinna|year=2017|title=Evaluating the CC-IDF citation-weighting scheme – How effectively can 'Inverse Document Frequency' (IDF) be applied to references?|url=http://beel.org/publications/2017%20iConference%20--%20Evaluating%20the%20CC-IDF%20citation-weighting%20scheme%20--%20preprint.pdf|journal=Proceedings of the 12th IConference|access-date=2017-01-29|archive-date=2020-09-22|archive-url=https://web.archive.org/web/20200922150304/http://beel.org/publications/2017%20iConference%20--%20Evaluating%20the%20CC-IDF%20citation-weighting%20scheme%20--%20preprint.pdf|url-status=dead}}&lt;/ref&gt;
+
+== Derivatives ==
+A number of term-weighting schemes have derived from tf–idf. One of them is TF–PDF (term frequency * proportional document frequency).&lt;ref&gt;{{Cite book|last1=Khoo Khyou Bun|last2=Bun|first2=Khoo Khyou|last3=Ishizuka|first3=M.|title=Proceedings Third International Workshop on Advanced Issues of E-Commerce and Web-Based Information Systems. WECWIS 2001 |chapter=Emerging Topic Tracking System |pages=2–11|language=en-US|doi=10.1109/wecwis.2001.933900|year=2001|isbn=978-0-7695-1224-2|citeseerx=10.1.1.16.7986|s2cid=1049263}}&lt;/ref&gt; TF–PDF was introduced in 2001 in the context of identifying emerging topics in the media. The PDF component measures the difference of how often a term occurs in different domains. Another derivate is TF–IDuF. In TF–IDuF,&lt;ref&gt;{{Cite journal|last1=Langer|first1=Stefan|last2=Gipp|first2=Bela|year=2017|title=TF-IDuF: A Novel Term-Weighting Scheme for User Modeling based on Users' Personal Document Collections|url=https://www.gipp.com/wp-content/papercite-data/pdf/beel17.pdf|journal=IConference}}&lt;/ref&gt; idf is not calculated based on the document corpus that is to be searched or recommended. Instead, idf is calculated on users' personal document collections. The authors report that TF–IDuF was equally effective as tf–idf but could also be applied in situations when, e.g., a user modeling system has no access to a global document corpus. The DELTA TF-IDF &lt;ref&gt;{{cite conference |last1 = Martineau |first1 = Justin |last2 = Finin |first2 = Tim |date = 2009 |doi = 10.1609/icwsm.v3i1.13979 |title = Delta TFIDF: An Improved Feature Space for Sentiment Analysis |url = https://aaai.org/papers/00258-13979-delta-tfidf-an-improved-feature-space-for-sentiment-analysis/ |book-title = Proceedings of theThird International AAAI Conference on Web and Social Media |conference = ICWSM |location = San Jose, CA |publisher = AAAI |doi-access = free }}&lt;/ref&gt; derivative uses the difference in importance of a term across two specific classes, like positive and negative sentiment. For example, it can assign a high score to a word like "excellent" in positive reviews and a low score to the same word in negative reviews. This helps identify words that strongly indicate the sentiment of a document, potentially leading to improved accuracy in text classification tasks.
+
+== See also ==
+{{Div col|colwidth=25em}}
+* [[Word embedding]]
+* [[Kullback–Leibler divergence]]
+* [[Latent Dirichlet allocation]]
+* [[Latent semantic analysis]]
+* [[Mutual information]]
+* [[Noun phrase]]
+* [[Okapi BM25]]
+* [[PageRank]]
+* [[Vector space model]]
+* [[Word count]]
+* [[SMART Information Retrieval System]]
+{{div col end}}
+
+== References ==
+{{Reflist}}
+* {{Cite book
+ | last1 = Salton
+ | first1 = G
+ | author-link1 = Gerard Salton
+ | last2 = McGill
+ | first2 = M. J.
+ | year = 1986
+ | title = Introduction to modern information retrieval
+ | publisher = [[McGraw-Hill]]
+ | isbn = 978-0-07-054484-0
+ | url-access = registration
+ | url = https://archive.org/details/introductiontomo00salt
+ }}
+* {{Cite journal | doi = 10.1145/182.358466| title = Extended Boolean information retrieval| journal = Communications of the ACM| volume = 26| issue = 11| pages = 1022–1036| year = 1983| last1 = Salton | first1 = G. | author-link1 = Gerard Salton| last2 = Fox | first2 = E. A. | last3 = Wu | first3 = H. | hdl = 1813/6351| s2cid = 207180535| hdl-access = free}}
+* {{Cite journal |doi= 10.1016/0306-4573(88)90021-0 |title= Term-weighting approaches in automatic text retrieval| journal= Information Processing &amp; Management |volume= 24 |issue=5 |pages= 513–523 |year= 1988 |last1= Salton |first1=G. |author-link1= Gerard Salton |last2= Buckley |first2=C. |hdl= 1813/6721|s2cid= 7725217|url= https://ecommons.cornell.edu/bitstream/1813/6721/1/87-881.pdf |hdl-access= free }}
+* {{Cite journal |doi= 10.1145/1361684.1361686 |title= Interpreting TF-IDF term weights as making relevance decisions |journal= ACM Transactions on Information Systems |volume= 26 |issue= 3 |pages= 1 |year= 2008 |last1= Wu |first1=H. C. |last2= Luk |first2= R.W.P. |last3= Wong |first3= K.F. |last4= Kwok |first4= K.L. |hdl= 10397/10130 |s2cid= 18303048 |hdl-access= free }}
+
+== External links and suggested reading ==
+* [[Gensim]] is a Python library for vector space modeling and includes tf–idf weighting.
+* [http://www.codeproject.com/KB/IP/AnatomyOfASearchEngine1.aspx Anatomy of a search engine] {{Webarchive|url=https://web.archive.org/web/20090310075505/http://www.codeproject.com/KB/IP/AnatomyOfASearchEngine1.aspx |date=2009-03-10 }}
+* [http://lucene.apache.org/core/3_6_1/api/all/org/apache/lucene/search/Similarity.html tf–idf and related definitions] as used in [[Lucene]]
+* [http://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html#sklearn.feature_extraction.text.TfidfTransformer TfidfTransformer] in [[scikit-learn]]
+* [https://www.hpclab.ceid.upatras.gr/tmg/ Text to Matrix Generator (TMG)]  MATLAB toolbox that can be used for various tasks in text mining (TM) specifically  i) indexing, ii) retrieval, iii) dimensionality reduction, iv) clustering, v) classification. The indexing step offers the user the ability to apply local and global weighting methods, including tf–idf.
+* [https://www.opinosis-analytics.com/knowledge-base/term-frequency-explained/ Term-frequency explained] Explanation of term-frequency
+
+{{DEFAULTSORT:Tf-Idf}}
+[[Category:Statistical natural language processing]]
+[[Category:Ranking functions]]
+[[Category:Vector space model]]</text>
+      <sha1>sput5p1bekc6f9v0yun04z52rm9e6fp</sha1>
+    </revision>
+  </page>
+</mediawiki>

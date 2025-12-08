@@ -2,11 +2,11 @@ use std::collections::HashMap;
 use crate::term_frequency::TermFrequency;
 
 #[derive(Debug, Default)]
-pub struct InverseDocumentFrequency(HashMap<String, f32>);
+pub struct InverseDocumentFrequency(pub HashMap<String, f32>);
 
 impl InverseDocumentFrequency {
 
-    pub fn update(&mut self, term: &str, docs: &mut Vec<TermFrequency>) {
+    pub fn update(&mut self, term: &str, docs: &Vec<TermFrequency>) {
         if !self.0.contains_key(term) {
             let docs_count = docs.len();
 

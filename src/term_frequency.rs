@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 #[derive(Debug, Default)]
-pub struct TermFrequency(pub HashMap<String, u16>);
+pub struct TermFrequency(pub HashMap<String, u32>);
 
 impl TermFrequency {
 

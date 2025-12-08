@@ -45,10 +45,11 @@ impl<'a> Iterator for Tokenizer<'a> {
             return Some(self.chop_while(|x| x.is_alphabetic()).iter().collect());
         }
 
-        let output = &self.input[0..1];
+        let token_chars = &self.input[0..1];
         self.input = &self.input[1..];
 
-        Some(output.iter().collect())
+        let final_token: String = token_chars.iter().collect::<String>().to_lowercase();
+        Some(final_token)
     }
 }
 
