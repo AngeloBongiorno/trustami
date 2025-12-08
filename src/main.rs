@@ -1,6 +1,6 @@
 use std::fs::File;
 use std::io::Read;
-use trustami::parser;
+use trustami::parsers;
 use trustami::tokenizer::Tokenizer;
 use trustami::term_frequency::TermFrequency;
 use trustami::inverse_doc_frequency::InverseDocumentFrequency;
@@ -23,7 +23,7 @@ fn main() {
         let mut input_data = String::new();
         let _ = file_handle.read_to_string(&mut input_data).unwrap();
 
-        let txt = parser::parse_xml_string(input_data);
+        let txt = parsers::parse_xml_string(input_data);
 
         let chars: Vec<char> = txt.chars().collect();
         let tokenizer = Tokenizer::from_chars(&chars);
