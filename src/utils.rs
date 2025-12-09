@@ -13,20 +13,25 @@ impl TfIdf {
     pub fn new(
         term: &str,
         doc: &TermFrequency,
-        idf: &InverseDocumentFrequency
-    ) -> Result<Self, String> {
+        idf: &InverseDocumentFrequency,
+        docs_count: usize,
+    ) -> Self {
 
         let lowercase_term = term.to_lowercase();
         let term_freq = doc.term_freq.get(&lowercase_term).copied().unwrap_or(0);
-        let inverse_doc_freq = idf.0.get(&lowercase_term).ok_or("Term is not in IDF index.")?;
+        
+        //let inverse_doc_freq = idf.0.get(&lowercase_term).ok_or("Term is not in IDF index.")?;
+
+        // defaults to 1 if the term does not exist in the corups
+        let smoothing_default = (1 + docs_count) as f32;
+        let inverse_doc_freq = idf.get_inner_map().get(&lowercase_term).unwrap_or(&smoothing_default);
+        //let inverse_doc_freq = idf.0.get(&lowercase_term).unwrap_or(&smoothing_default);
 
         let score = term_freq as f32 * inverse_doc_freq.log10();
-        Ok(
-            Self {
-                document_path: doc.document_path.clone(),
-                score,
-            }
-        )
+        Self {
+            document_path: doc.document_path.clone(),
+            score,
+        }
     }
 }
 

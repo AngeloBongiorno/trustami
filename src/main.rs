@@ -1,5 +1,7 @@
 use std::fs::File;
 use std::io::Read;
+use std::path::PathBuf;
+use clap::Parser;
 use trustami::parsers;
 use trustami::tokenizer::Tokenizer;
 use trustami::term_frequency::TermFrequency;
@@ -8,16 +10,26 @@ use trustami::inverse_doc_frequency::InverseDocumentFrequency;
 use trustami::utils::TfIdf;
 use trustami::view;
 
+
+#[derive(Parser, Debug)]
+#[command(version)]
+struct Args {
+    dir_path: PathBuf,
+    query: String,
+}
+
 fn main() {
 
-    let data_dir_path = "./data";
+    let args = Args::parse();
+    let data_dir_path = args.dir_path;
+    let query_term = args.query;
+
     let file_paths = path_resolver::collect_valid_paths(data_dir_path);
 
     let mut tf_docs = vec![];
 
     for file_path in file_paths {
         let mut file_handle = File::open(&file_path).unwrap();
-
         let mut input_data = String::new();
         let _ = file_handle.read_to_string(&mut input_data).unwrap();
 
@@ -47,8 +59,8 @@ fn main() {
     let mut results: Vec<TfIdf> = Vec::new();
 
     // COMPUTE TF IDF
-    for tf_doc in tf_docs {
-        let tfidf = TfIdf::new("rome", &tf_doc, &idf).expect("term caused idf error");
+    for tf_doc in &tf_docs {
+        let tfidf = TfIdf::new(&query_term, tf_doc, &idf, tf_docs.len());
         results.push(tfidf);
     }
 
