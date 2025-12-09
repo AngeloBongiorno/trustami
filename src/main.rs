@@ -1,20 +1,19 @@
+use clap::Parser;
 use std::fs::File;
 use std::io::Read;
 use std::path::PathBuf;
-use clap::Parser;
-use trustami::parsers;
-use trustami::tokenizer::Tokenizer;
-use trustami::term_frequency::TermFrequency;
-use trustami::path_resolver;
 use trustami::inverse_doc_frequency::InverseDocumentFrequency;
+use trustami::parsers;
+use trustami::path_resolver;
+use trustami::term_frequency::TermFrequency;
+use trustami::tokenizer::Tokenizer;
 use trustami::utils::{TfIdf, get_current_directory};
 use trustami::view;
-
 
 #[derive(Parser, Debug)]
 #[command(version)]
 struct Args {
-    #[arg(help="One or more terms to search")]
+    #[arg(help = "One or more terms to search")]
     query: String,
     #[arg(help="Directory to search in", default_value=get_current_directory())]
     //#[arg(default_missing_value_os=get_current_directory())]
@@ -22,7 +21,6 @@ struct Args {
 }
 
 fn main() {
-
     let args = Args::parse();
     let data_dir_path = args.dir_path;
     let query_term = args.query;
@@ -56,7 +54,7 @@ fn main() {
     let mut idf = InverseDocumentFrequency::default();
     for tf_doc in &tf_docs {
         for key in tf_doc.term_freq.keys() {
-            idf.update(key, &tf_docs); 
+            idf.update(key, &tf_docs);
         }
     }
 
@@ -69,5 +67,4 @@ fn main() {
     }
 
     view::present_results_cli(results);
-
 }

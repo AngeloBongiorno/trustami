@@ -7,7 +7,6 @@ pub struct TermFrequency {
 }
 
 impl TermFrequency {
-
     pub fn new(document_path: PathBuf) -> Self {
         Self {
             document_path,
