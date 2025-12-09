@@ -7,15 +7,18 @@ use trustami::tokenizer::Tokenizer;
 use trustami::term_frequency::TermFrequency;
 use trustami::path_resolver;
 use trustami::inverse_doc_frequency::InverseDocumentFrequency;
-use trustami::utils::TfIdf;
+use trustami::utils::{TfIdf, get_current_directory};
 use trustami::view;
 
 
 #[derive(Parser, Debug)]
 #[command(version)]
 struct Args {
-    dir_path: PathBuf,
+    #[arg(help="One or more terms to search")]
     query: String,
+    #[arg(help="Directory to search in", default_value=get_current_directory())]
+    //#[arg(default_missing_value_os=get_current_directory())]
+    dir_path: PathBuf,
 }
 
 fn main() {
@@ -24,6 +27,7 @@ fn main() {
     let data_dir_path = args.dir_path;
     let query_term = args.query;
 
+    println!("{:?} - {:?}", data_dir_path, query_term);
     let file_paths = path_resolver::collect_valid_paths(data_dir_path);
 
     let mut tf_docs = vec![];

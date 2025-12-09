@@ -1,3 +1,5 @@
+use std::env::current_dir;
+use std::ffi::OsString;
 use std::path::PathBuf;
 
 use crate::inverse_doc_frequency::InverseDocumentFrequency;
@@ -40,6 +42,14 @@ impl std::fmt::Display for TfIdf {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}\n\tScore: {:.2}", self.document_path.display(), self.score)
     }
+}
+
+pub fn get_current_directory() -> OsString {
+
+
+    current_dir().unwrap().into_os_string()
+
+
 }
 
 #[cfg(test)]

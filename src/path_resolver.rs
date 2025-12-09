@@ -24,9 +24,15 @@ where P: AsRef<Path>  {
 
         if file_type.is_file() {
             let filename = dir_entry.file_name().to_str().expect("Failed to convert filename").to_owned();
-            let extension = get_extension_from_filename(&filename).expect("failed to get extension");
-            if extension == "xml" {
-                file_paths.push(path);
+            if let Some(extension) = get_extension_from_filename(&filename) {
+                if extension == "xml" {
+                    println!("Obtained file extension for: {}", filename);
+                    file_paths.push(path);
+                } else {
+                    eprintln!("File extension for: {} is not supported.", filename);
+                }
+            } else {
+                    eprintln!("Could not obtain file extension for: {}.", filename);
             }
         }
     }
