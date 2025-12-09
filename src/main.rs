@@ -5,19 +5,18 @@ use trustami::tokenizer::Tokenizer;
 use trustami::term_frequency::TermFrequency;
 use trustami::path_resolver;
 use trustami::inverse_doc_frequency::InverseDocumentFrequency;
-use trustami::utils;
+use trustami::utils::TfIdf;
+use trustami::view;
 
 fn main() {
 
     let data_dir_path = "./data";
     let file_paths = path_resolver::collect_valid_paths(data_dir_path);
 
-    println!("{:?}", file_paths);
-
     let mut tf_docs = vec![];
 
     for file_path in file_paths {
-        let mut file_handle = File::open(file_path).unwrap();
+        let mut file_handle = File::open(&file_path).unwrap();
 
         let mut input_data = String::new();
         let _ = file_handle.read_to_string(&mut input_data).unwrap();
@@ -27,7 +26,7 @@ fn main() {
         let chars: Vec<char> = txt.chars().collect();
         let tokenizer = Tokenizer::from_chars(&chars);
 
-        let mut tf = TermFrequency::default();
+        let mut tf = TermFrequency::new(file_path);
 
         // compute TF for doc
         for token in tokenizer {
@@ -40,14 +39,19 @@ fn main() {
     // update IDF
     let mut idf = InverseDocumentFrequency::default();
     for tf_doc in &tf_docs {
-        for key in tf_doc.0.keys() {
+        for key in tf_doc.term_freq.keys() {
             idf.update(key, &tf_docs); 
         }
     }
 
+    let mut results: Vec<TfIdf> = Vec::new();
+
     // COMPUTE TF IDF
     for tf_doc in tf_docs {
-        let tfidf = utils::compute_tf_idf("rome", &tf_doc, &idf);
-        println!("{:?}", tfidf);
+        let tfidf = TfIdf::new("rome", &tf_doc, &idf).expect("term caused idf error");
+        results.push(tfidf);
     }
+
+    view::present_results_cli(results);
+
 }

@@ -13,7 +13,7 @@ impl InverseDocumentFrequency {
             let mut matched_docs_count = 0;
 
             for doc in docs {
-                if doc.0.contains_key(term) {
+                if doc.term_freq.contains_key(term) {
                     matched_docs_count += 1;
                 }
             }
