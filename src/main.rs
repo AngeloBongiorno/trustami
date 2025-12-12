@@ -1,70 +1,91 @@
-use clap::Parser;
+use clap::{Parser, Subcommand};
+use std::error;
 use std::fs::File;
-use std::io::Read;
+use std::io::{Read, Write};
 use std::path::PathBuf;
-use trustami::inverse_doc_frequency::InverseDocumentFrequency;
-use trustami::parsers;
 use trustami::path_resolver;
-use trustami::term_frequency::TermFrequency;
-use trustami::tokenizer::Tokenizer;
-use trustami::utils::{TfIdf, get_current_directory};
+use trustami::utils::{self, Index, TfIdf};
 use trustami::view;
 
-#[derive(Parser, Debug)]
+#[derive(Debug, Parser)]
 #[command(version)]
-struct Args {
-    #[arg(help = "One or more terms to search")]
-    query: String,
-    #[arg(help="Directory to search in", default_value=get_current_directory())]
-    //#[arg(default_missing_value_os=get_current_directory())]
-    dir_path: PathBuf,
+struct Cli {
+    #[clap(subcommand)]
+    command: Command,
+}
+
+#[derive(Subcommand, Debug)]
+enum Command {
+    /// Search term in the specified directory
+    Query {
+        //#[arg(help = "One or more terms to search")]
+        query_string: String,
+        #[arg(help="Directory to search in", default_value=utils::get_current_directory())]
+        dir_path: PathBuf,
+    },
+    /// Index the documents in the specified directory
+    Index {
+        #[arg(help="Directory to index in", default_value=utils::get_current_directory())]
+        dir_path: PathBuf,
+    },
 }
 
 fn main() {
-    let args = Args::parse();
-    let data_dir_path = args.dir_path;
-    let query_term = args.query;
+    if let Err(err) = run() {
+        eprintln!("ERROR: {err}.");
+    };
+}
 
-    println!("{:?} - {:?}", data_dir_path, query_term);
-    let file_paths = path_resolver::collect_valid_paths(data_dir_path);
+fn run() -> Result<(), Box<dyn error::Error>> {
+    let cli = Cli::parse();
 
-    let mut tf_docs = vec![];
+    match &cli.command {
+        Command::Query {
+            query_string,
+            dir_path,
+        } => {
+            let index: Index;
 
-    for file_path in file_paths {
-        let mut file_handle = File::open(&file_path).unwrap();
-        let mut input_data = String::new();
-        let _ = file_handle.read_to_string(&mut input_data).unwrap();
+            if let Ok(mut index_file_handle) = File::open("index.json") {
+                // index was found, load it
+                dbg!("Index was found!");
+                let mut buf = String::new();
+                index_file_handle.read_to_string(&mut buf)?;
+                index = serde_json::from_str(&buf)?;
+            } else {
+                // build index
+                dbg!("Index was not found!");
+                let file_paths = path_resolver::collect_valid_paths(dir_path);
+                index = utils::index_docs(&file_paths);
+            }
 
-        let txt = parsers::parse_xml_string(input_data);
+            let Index {
+                term_frequencies,
+                inverse_document_frequency,
+            } = index;
+            let mut results: Vec<TfIdf> = Vec::new();
 
-        let chars: Vec<char> = txt.chars().collect();
-        let tokenizer = Tokenizer::from_chars(&chars);
-
-        let mut tf = TermFrequency::new(file_path);
-
-        // compute TF for doc
-        for token in tokenizer {
-            tf.update(&token);
+            // COMPUTE TF IDF
+            for tf_doc in &term_frequencies {
+                let tfidf = TfIdf::new(
+                    query_string,
+                    tf_doc,
+                    &inverse_document_frequency,
+                    term_frequencies.len(),
+                );
+                results.push(tfidf);
+            }
+            dbg!("presenting results...");
+            view::present_results_cli(results);
+            Ok(())
         }
-
-        tf_docs.push(tf);
-    }
-
-    // update IDF
-    let mut idf = InverseDocumentFrequency::default();
-    for tf_doc in &tf_docs {
-        for key in tf_doc.term_freq.keys() {
-            idf.update(key, &tf_docs);
+        Command::Index { dir_path } => {
+            let mut file_handle = File::create_new("index.json")?;
+            let file_paths = path_resolver::collect_valid_paths(dir_path);
+            let new_index = utils::index_docs(&file_paths);
+            let serialized = serde_json::to_string(&new_index)?;
+            file_handle.write_all(serialized.as_bytes())?;
+            Ok(())
         }
     }
-
-    let mut results: Vec<TfIdf> = Vec::new();
-
-    // COMPUTE TF IDF
-    for tf_doc in &tf_docs {
-        let tfidf = TfIdf::new(&query_term, tf_doc, &idf, tf_docs.len());
-        results.push(tfidf);
-    }
-
-    view::present_results_cli(results);
 }
