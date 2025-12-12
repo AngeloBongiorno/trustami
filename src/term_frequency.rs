@@ -1,6 +1,7 @@
+use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, path::PathBuf};
 
-#[derive(Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct TermFrequency {
     pub document_path: PathBuf,
     pub term_freq: HashMap<String, u32>,

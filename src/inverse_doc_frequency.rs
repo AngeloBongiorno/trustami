@@ -1,7 +1,8 @@
 use crate::term_frequency::TermFrequency;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct InverseDocumentFrequency(HashMap<String, f32>);
 
 impl InverseDocumentFrequency {
