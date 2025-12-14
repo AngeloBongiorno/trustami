@@ -1,75 +1,115 @@
-use dirs;
-use std::path::PathBuf;
-use std::fs;
-use std::error::Error;
+//use dirs;
+use anyhow::{self, Context};
+use std::fs::{self, File};
+use std::path::{Path, PathBuf};
 
-fn create_index_collection_directory(mut data_directory: PathBuf) -> Result<PathBuf, Box<dyn Error>> {
-    
-    data_directory.push("trustami_index_collection");
-    fs::create_dir(&data_directory)?;
+const APPLICATION_DATA_DIRECTORY_NAME: &str = "trustami_application_data";
 
-    Ok(data_directory)
+fn create_application_data_directory(
+    mut user_data_directory: PathBuf,
+) -> Result<PathBuf, anyhow::Error> {
+    user_data_directory.push(APPLICATION_DATA_DIRECTORY_NAME);
+    fs::create_dir(&user_data_directory).with_context(|| {
+        format!(
+            "Could not create {} directory.",
+            APPLICATION_DATA_DIRECTORY_NAME
+        )
+    })?;
+
+    Ok(user_data_directory)
 }
 
-pub fn create_index_directory(dir_name: PathBuf) -> Result<PathBuf, Box<dyn Error>> {
-    let data_directory = dirs::data_local_dir().ok_or("Could not find OS user data directory.")?;
-    let trustami_index_collection_path = data_directory.join("trustami_index_collection");
+fn create_index_directory<P>(
+    application_data_path: PathBuf,
+    dir_name: P,
+) -> Result<PathBuf, anyhow::Error>
+where
+    P: AsRef<Path>,
+{
+    let index_path = application_data_path.join(dir_name);
 
-    if !trustami_index_collection_path.exists() {
-        create_index_collection_directory(data_directory)?;
-    }
-
-    let index_path = trustami_index_collection_path.join(dir_name);
-    fs::create_dir(&index_path)?;
+    fs::create_dir(&index_path)
+        .with_context(|| format!("Could not create directory at path: {:?}", index_path))?;
 
     Ok(index_path)
 }
 
+pub fn create_index_file<P>(
+    user_data_directory: PathBuf,
+    index_name: P,
+) -> Result<File, anyhow::Error>
+where
+    P: AsRef<Path>,
+{
+    let application_data_path = user_data_directory.join(APPLICATION_DATA_DIRECTORY_NAME);
+    if !application_data_path.exists() {
+        let _ = create_application_data_directory(user_data_directory)?;
+    }
+    let index_directory = application_data_path.join(&index_name);
+    if !index_directory.exists() {
+        let _ = create_index_directory(application_data_path, index_name)?;
+    }
+
+    let file_path = index_directory.join("index.json");
+    let file_handle = File::create_new(&file_path).context("Failed to create an index file.")?;
+
+    Ok(file_handle)
+}
+
 #[cfg(test)]
 mod tests {
+    use crate::os_interaction::{create_application_data_directory, create_index_directory, APPLICATION_DATA_DIRECTORY_NAME};
     use tempfile::tempdir;
-    use crate::os_interaction::{create_index_collection_directory, create_index_directory};
+    use std::fs;
 
     #[test]
-    fn index_collection_directory_is_created() {
-
+    fn application_data_directory_is_created() {
         let temp = tempdir().unwrap();
         let base_path = temp.path().to_path_buf();
 
-        let path = create_index_collection_directory(base_path).unwrap();
+        let path = create_application_data_directory(base_path).unwrap();
 
         assert!(path.exists());
         assert!(path.is_dir());
-
     }
 
     #[test]
-    fn index_collection_directory_is_not_created_when_already_exists() {
-
+    fn application_data_directory_errors_if_already_exists() {
         let temp = tempdir().unwrap();
         let base_path = temp.path().to_path_buf();
-        let dir = base_path.join("trustami_index_collection");
 
-        std::fs::create_dir_all(&dir).unwrap();
+        fs::create_dir(base_path.join(APPLICATION_DATA_DIRECTORY_NAME)).unwrap();
 
-        let result = create_index_collection_directory(base_path);
+        let result = create_application_data_directory(base_path);
 
         assert!(result.is_err());
     }
 
-
     #[test]
     fn index_directory_is_created() {
-
         let temp = tempdir().unwrap();
         let base_path = temp.path().to_path_buf();
-        let dir = base_path.join("trustami_index_collection");
+        let data_dir = base_path.join(APPLICATION_DATA_DIRECTORY_NAME);
+        std::fs::create_dir_all(&data_dir).unwrap();
+        let index_dir_name = "new_index_dir";
 
-        std::fs::create_dir_all(&dir).unwrap();
-
-        let index_path = create_index_directory(dir).unwrap();
+        let index_path = create_index_directory(data_dir, index_dir_name).unwrap();
 
         assert!(index_path.exists());
         assert!(index_path.is_dir());
+    }
+
+    #[test]
+    fn index_directory_creation_errors_if_directory_exists() {
+        let temp = tempdir().unwrap();
+        let base_path = temp.path().to_path_buf();
+        let data_dir = base_path.join(APPLICATION_DATA_DIRECTORY_NAME);
+        let index_dir_name = "my_index_dir";
+        let index_path = data_dir.join(index_dir_name);
+        std::fs::create_dir_all(&index_path).unwrap();
+
+        let result = create_index_directory(data_dir, index_dir_name);
+
+        assert!(result.is_err());
     }
 }
