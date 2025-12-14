@@ -25,16 +25,16 @@ enum Command {
         dir_path: PathBuf,
     },
     /// Index the documents in the specified directory
-    Index {
-        #[arg(help="Directory to index in", default_value=utils::get_current_directory())]
-        dir_path: PathBuf,
+    CreateIndex {
         #[arg(help = "Name of the new index")]
         index_name: String,
+        #[arg(help="Directory to index", default_value=utils::get_current_directory())]
+        dir_path: PathBuf,
     },
+    ListIndexes,
 }
 
 fn main() -> Result<(), anyhow::Error> {
-    //fn main() -> Result<(), Box<dyn error::Error>> {
     let cli = Cli::parse();
 
     let user_data_directory =
@@ -45,6 +45,7 @@ fn main() -> Result<(), anyhow::Error> {
             query_string,
             dir_path,
         } => {
+            // TODO: point to correct index path
             let index: Index;
 
             if let Ok(mut index_file_handle) = File::open("index.json") {
@@ -53,7 +54,7 @@ fn main() -> Result<(), anyhow::Error> {
                 index_file_handle.read_to_string(&mut buf)?;
                 index = serde_json::from_str(&buf)?;
             } else {
-                // build index
+                // TODO: build index similarly to create index command
                 let file_paths = path_resolver::collect_valid_paths(dir_path);
                 index = utils::index_docs(&file_paths);
             }
@@ -77,15 +78,13 @@ fn main() -> Result<(), anyhow::Error> {
             view::present_results_cli(results);
             Ok(())
         }
-        Command::Index {
+        Command::CreateIndex {
             dir_path,
             index_name,
         } => {
-            //os_interaction::create_index_directory(user_data_directory, dir_name)
-            //let mut file_handle =
-            //    File::create_new("index.json").context("Failed to create an index file.")?;
+            let mut input = std::io::stdin().lock();
             let mut file_handle =
-                os_interaction::create_index_file(user_data_directory, index_name)?;
+                os_interaction::create_index_file(user_data_directory, index_name, &mut input)?;
             let file_paths = path_resolver::collect_valid_paths(dir_path);
             let new_index = utils::index_docs(&file_paths);
             let serialized = serde_json::to_string(&new_index)
@@ -94,6 +93,9 @@ fn main() -> Result<(), anyhow::Error> {
                 .write_all(serialized.as_bytes())
                 .context("Failed to write index data to file.")?;
             Ok(())
+        }
+        Command::ListIndexes => {
+            todo!("Implement indexes name listing");
         }
     }
 }
