@@ -48,13 +48,11 @@ fn run() -> Result<(), Box<dyn error::Error>> {
 
             if let Ok(mut index_file_handle) = File::open("index.json") {
                 // index was found, load it
-                dbg!("Index was found!");
                 let mut buf = String::new();
                 index_file_handle.read_to_string(&mut buf)?;
                 index = serde_json::from_str(&buf)?;
             } else {
                 // build index
-                dbg!("Index was not found!");
                 let file_paths = path_resolver::collect_valid_paths(dir_path);
                 index = utils::index_docs(&file_paths);
             }
@@ -75,7 +73,6 @@ fn run() -> Result<(), Box<dyn error::Error>> {
                 );
                 results.push(tfidf);
             }
-            dbg!("presenting results...");
             view::present_results_cli(results);
             Ok(())
         }
