@@ -95,7 +95,16 @@ fn main() -> Result<(), anyhow::Error> {
             Ok(())
         }
         Command::ListIndexes => {
-            todo!("Implement indexes name listing");
+            let index_names = os_interaction::get_index_names(user_data_directory)?;
+
+            if index_names.is_empty() {
+                println!("No valid index was found!");
+            } else {
+                for index_name in index_names {
+                    println!("{}", index_name.display());
+                }
+            }
+            Ok(())
         }
     }
 }
