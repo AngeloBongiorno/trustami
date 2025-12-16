@@ -2,18 +2,31 @@
 use anyhow::{self, Context};
 use std::ffi::OsString;
 use std::fs::{self, File};
-use std::io::{BufRead, ErrorKind};
+use std::io::{BufRead, ErrorKind, Read};
 use std::path::{Path, PathBuf};
 use thiserror::Error;
+use serde::{Serialize, Deserialize};
+use serde_json;
 
 const APPLICATION_DATA_DIRECTORY_NAME: &str = "trustami_application_data";
 const INDEX_FILENAME: &str = "index.json";
+const REGISTRY_FILENAME: &str = "registry.json";
 
 #[derive(Debug, Error)]
 enum FolderStructureError<'a> {
     #[error("The folder {} was missing", .0)]
     MissingFolderError(&'a str),
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct Registry(Vec<RegistryEntry>);
+
+#[derive(Serialize, Deserialize)]
+struct RegistryEntry {
+    index_name: String,
+    path: PathBuf,
+}
+
 
 fn create_application_data_directory(
     mut user_data_directory: PathBuf,
@@ -25,6 +38,12 @@ fn create_application_data_directory(
             APPLICATION_DATA_DIRECTORY_NAME
         )
     })?;
+
+    // crate registry file
+    let registry_path = user_data_directory.join(REGISTRY_FILENAME);
+    File::create(registry_path)
+        .with_context(|| format!("Could not create {} file", REGISTRY_FILENAME))?;
+
 
     Ok(user_data_directory)
 }
@@ -42,6 +61,26 @@ where
         .with_context(|| format!("Could not create directory at path: {:?}", index_path))?;
 
     Ok(index_path)
+}
+
+fn update_registry_file<P>(
+    application_data_path: PathBuf,
+    index_name: P,
+) -> Result<(), anyhow::Error>
+where
+    P: AsRef<Path>,
+{
+    let registry_path = application_data_path.join(REGISTRY_FILENAME);
+    let mut buf = String::new();
+
+    let registry = File::open(registry_path)
+        .with_context(|| format!("Failed to open file at {}", registry_path.display()))?;
+    registry.read_to_string(&mut buf)
+        .context("Failed to read registry file.")?;
+
+    serde_json::from_str(&buf)
+        .context("Failed to convert file content to registry struct")?;
+    
 }
 
 pub fn create_index_file<P, R>(
@@ -137,14 +176,13 @@ pub fn get_index_names(user_data_directory: PathBuf) -> Result<Vec<OsString>, an
 #[cfg(test)]
 mod tests {
     use crate::os_interaction::{
-        APPLICATION_DATA_DIRECTORY_NAME, INDEX_FILENAME, create_application_data_directory,
-        create_index_directory, create_index_file, get_index_names,
+        create_application_data_directory, create_index_directory, create_index_file, get_index_names, update_registry_file, APPLICATION_DATA_DIRECTORY_NAME, INDEX_FILENAME
     };
     use std::{
-        fs::{self, File},
-        path::PathBuf,
+        fs::{self, File}, io::Read, path::PathBuf, str::FromStr
     };
     use tempfile::{TempDir, tempdir};
+    use serde_json;
 
     fn create_fake_user_data_path() -> (TempDir, PathBuf) {
         let temp = tempdir().unwrap();
@@ -161,6 +199,18 @@ mod tests {
 
         assert!(path.exists());
         assert!(path.is_dir());
+    }
+
+    #[test]
+    fn registry_file_is_created() {
+        let (_temp, fake_user_data_path) = create_fake_user_data_path();
+
+        let path = create_application_data_directory(fake_user_data_path).unwrap();
+
+        let registry_path = path.join("registry.json");
+
+        assert!(registry_path.exists());
+        assert!(registry_path.is_file());
     }
 
     #[test]
@@ -313,7 +363,34 @@ mod tests {
         let names = get_index_names(fake_user_data_path);
 
         assert!(names.is_ok());
-        dbg!(&names);
         assert_eq!(names.unwrap().len(), 3);
+    }
+
+
+    #[test]
+    fn update_empty_registry() {
+        let (_temp, fake_application_data_path) = create_fake_user_data_path();
+
+        let index_name = "my_index";
+        let index_path = PathBuf::from_str("/fake/path");
+
+        let registry_path = fake_application_data_path.join("registry.json");
+        File::create(&registry_path).unwrap();
+
+        update_registry_file(fake_application_data_path, index_name, index_path).unwrap();
+
+        let mut registry_content = String::new();
+        let mut registry = File::open(&registry_path).unwrap();
+        registry.read_to_string(&mut registry_content).unwrap();
+        let expected = serde_json::json!([
+            {
+                "index_name": "my_index",
+                "path": "/fake/path"
+            }
+        ]).to_string();
+        assert_eq!(
+            registry_content,
+            expected
+        )
     }
 }
