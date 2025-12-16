@@ -25,13 +25,13 @@ enum Command {
         dir_path: PathBuf,
     },
     /// Index the documents in the specified directory
-    CreateIndex {
+    NewIndex {
         #[arg(help = "Name of the new index")]
         index_name: String,
         #[arg(help="Directory to index", default_value=utils::get_current_directory())]
         dir_path: PathBuf,
     },
-    ListIndexes,
+    List,
 }
 
 fn main() -> Result<(), anyhow::Error> {
@@ -55,7 +55,7 @@ fn main() -> Result<(), anyhow::Error> {
                 index = serde_json::from_str(&buf)?;
             } else {
                 // TODO: build index similarly to create index command
-                let file_paths = path_resolver::collect_valid_paths(dir_path);
+                let file_paths = path_resolver::collect_valid_paths(dir_path)?;
                 index = utils::index_docs(&file_paths);
             }
 
@@ -78,14 +78,14 @@ fn main() -> Result<(), anyhow::Error> {
             view::present_results_cli(results);
             Ok(())
         }
-        Command::CreateIndex {
+        Command::NewIndex {
             dir_path,
             index_name,
         } => {
             let mut input = std::io::stdin().lock();
             let mut file_handle =
                 os_interaction::create_index_file(user_data_directory, index_name, &mut input)?;
-            let file_paths = path_resolver::collect_valid_paths(dir_path);
+            let file_paths = path_resolver::collect_valid_paths(dir_path)?;
             let new_index = utils::index_docs(&file_paths);
             let serialized = serde_json::to_string(&new_index)
                 .context("Failed to serialize newly created index.")?;
@@ -94,7 +94,7 @@ fn main() -> Result<(), anyhow::Error> {
                 .context("Failed to write index data to file.")?;
             Ok(())
         }
-        Command::ListIndexes => {
+        Command::List => {
             let index_names = os_interaction::get_index_names(user_data_directory)?;
 
             if index_names.is_empty() {
